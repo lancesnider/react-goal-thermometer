@@ -1,5 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
 import PropTypes from 'prop-types';
+import { gsap, Power4 } from 'gsap'
+
+const AnimationValues = {
+  animatedValue: 0
+};
 
 const valueString = (value, props) => {
   return Intl.NumberFormat(props.locale, {
@@ -11,17 +17,30 @@ const valueString = (value, props) => {
 }
 
 const ReactGoalThermometer = (props) => {
-  const { roundNumbers, amount, goal } = props;
+  const [animatedAmount, setAnimatedAmount] = useState(0);
 
-  const currentValue = roundNumbers ?
+  const { roundNumbers, amount, goal, animationDuration } = props;
+
+  const newAmount = roundNumbers ?
     Math.round(amount) :
     amount;
+
+  useEffect(() => {
+    gsap.to(AnimationValues, animationDuration, {
+      animatedValue: newAmount,
+      roundProps: "animatedValue",
+      ease: Power4.easeInOut,
+      onUpdate: () => {
+        setAnimatedAmount(AnimationValues.animatedValue);
+      }
+    });
+  }, [newAmount]);
 
   return (
     <div>
       goal: {valueString(goal, props)}
       <br />
-      current: {valueString(currentValue, props)}
+      current: {valueString(animatedAmount, props)}
     </div>
   );
 };
@@ -31,7 +50,7 @@ ReactGoalThermometer.defaultProps = {
   locale: 'en',
   currency: 'USD',
   currencyDisplay: 'symbol',
-  animationDuration: 1000,
+  animationDuration: 0.9,
   numberOfTickmarks: 4,
   textWithTickmarks: true,
 }
