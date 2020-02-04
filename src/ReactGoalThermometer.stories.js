@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@storybook/react/demo';
 import ReactGoalThermometer from './ReactGoalThermometer'
 
@@ -7,12 +7,18 @@ export default {
   component: Button,
 };
 
-export const Default = () => (
-  <ReactGoalThermometer
-    goal={10000}
-    amount={2513.441246}
-  />
-);
+export const Default = () => {
+  const [amount, setAmount] = useState(2513.441246)
+  return (
+    <div>
+      <button onClick={() => setAmount(amount + 500)}>Add $500</button>
+      <ReactGoalThermometer
+        goal={10000}
+        amount={amount}
+      />
+    </div>
+  )
+};
 
 export const NumberFormats = () => (
   <div>
